@@ -19,9 +19,9 @@ under the License.
 -->
 <rss version="0.91">
   <channel>
-    <title>jsystemd - Checkstyle report</title>
-    <link>https://jpmsilva.github.io/jsystemd-site/jsystemd-core/</link>
-    <description>jsystemd - Checkstyle report</description>
+    <title>jsystemd starter module for Spring Boot - Checkstyle report</title>
+    <link>https://jpmsilva.github.io/jsystemd-site/jsystemd-spring-boot-starter/</link>
+    <description>jsystemd starter module for Spring Boot - Checkstyle report</description>
     <language>en-us</language>
     <copyright>&#169;2017 - 2018</copyright>
     <item>
@@ -30,9 +30,9 @@ under the License.
              Warnings: 0,
              Infos: 0
       </title>
-            <link>https://jpmsilva.github.io/jsystemd-site/jsystemd-core//checkstyle.html</link>
+            <link>https://jpmsilva.github.io/jsystemd-site/jsystemd-spring-boot-starter//checkstyle.html</link>
       <description>
-        <p>Click <a href="https://jpmsilva.github.io/jsystemd-site/jsystemd-core//checkstyle.html">here</a> for the full Checkstyle report.</p>
+        <p>Click <a href="https://jpmsilva.github.io/jsystemd-site/jsystemd-spring-boot-starter//checkstyle.html">here</a> for the full Checkstyle report.</p>
 
         <table summary="Files" boder="1">
           <thead>
