@@ -8,3 +8,7 @@ title: Blogging Like a Hacker
 <p>{{ item.description }}</p>
 <p><a href="{{ item.url }}">{{ item.title }}</a></p>
 {% endfor %}
+
+{% for file in site.site %}
+* [{{ file.path }}]({{ site.baseurl }}{{ file.path }})
+{% endfor %}
