@@ -1,4 +1,4 @@
 collections:
-  - site
+  - versions
 
 theme: jekyll-theme-minimal
