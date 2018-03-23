@@ -3,12 +3,6 @@ layout: post
 title: Blogging Like a Hacker
 ---
 
-{% for item in collections.site %}
-<h2>{{ item.title }}</h2>
-<p>{{ item.description }}</p>
-<p><a href="{{ item.url }}">{{ item.title }}</a></p>
-{% endfor %}
-
-{% for file in site.site %}
+{% for file in versions %}
 * [{{ file.path }}]({{ site.baseurl }}{{ file.path }})
 {% endfor %}
