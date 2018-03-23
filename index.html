@@ -3,6 +3,6 @@ layout: post
 title: Blogging Like a Hacker
 ---
 
-{% for file in versions %}
+{% for file in site.versions %}
 * [{{ file.path }}]({{ site.baseurl }}{{ file.path }})
 {% endfor %}
