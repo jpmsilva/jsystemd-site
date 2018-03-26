@@ -9,7 +9,7 @@ layout: default
   {% assign count = pathElements | size %}
   {% if count == 3 and pathElements[2] == 'index.html' %}
   {% assign version = pathElements[1] %}
-  <li><a href="/jsystemd-site/versions/{{version}}">{{version}}</a></li>
+  <li><a href="{{site.url}}/versions/{{version}}">{{version}}</a></li>
   {% endif %}
   {% endfor %}
 </ul>

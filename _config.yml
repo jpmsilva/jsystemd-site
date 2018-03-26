@@ -1,3 +1,8 @@
 collections:
   - versions
 theme: jekyll-theme-minimal
+title: jsystemd
+description: >
+  jsystemd aims to provide a better platform to integrate Java applications with systemd, and run
+  them as proper operating system services.<br>Pick a version from the list to check the
+  documentation.
