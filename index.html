@@ -21,8 +21,9 @@ limitations under the License.
 <h1>Version list</h1>
 <ul>
   {% assign collection = site.collections | where:'label','versions' | first %}
-  {% for file in collection.files %}
-  {% assign pathElements = file.path | split:'/' %}
+  {% assign paths = collection.files | map: "path" | sort | reverse %}
+  {% for path in paths %}
+  {% assign pathElements = path | split:'/' %}
   {% assign count = pathElements | size %}
   {% if count == 3 and pathElements[2] == 'index.html' %}
   {% assign version = pathElements[1] %}
