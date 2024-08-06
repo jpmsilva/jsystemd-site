@@ -1,1 +1,1 @@
-/usr/lib/jvm/zulu19-ca/bin/javadoc @options @packages
+/usr/lib/jvm/java-21-zulu-openjdk-ca/bin/javadoc @options @packages

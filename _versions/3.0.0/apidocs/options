@@ -9,7 +9,7 @@
 '/home/jmsilva/development/IdeaProjects/jsystemd/jsystemd-core/src/main/java:/home/jmsilva/development/IdeaProjects/jsystemd/jsystemd-core/target/generated-sources/annotations:/home/jmsilva/development/IdeaProjects/jsystemd/jsystemd-spring-boot-starter/src/main/java:/home/jmsilva/development/IdeaProjects/jsystemd/jsystemd-spring-boot-starter/target/generated-sources/annotations'
 -author
 -bottom
-'Copyright &#169; 2017&#x2013;2023. All rights reserved.'
+'Copyright &#169; 2017&#x2013;2024. All rights reserved.'
 -charset
 'UTF-8'
 -d
@@ -17,8 +17,8 @@
 -docencoding
 'UTF-8'
 -doctitle
-'jsystemd 3.0.0 API'
+'jsystemd 3.0.1-SNAPSHOT API'
 -use
 -version
 -windowtitle
-'jsystemd 3.0.0 API'
+'jsystemd 3.0.1-SNAPSHOT API'
