@@ -22,9 +22,9 @@
 -link
 'https://docs.oracle.com/en/java/javase/17/docs/api'
 -link
-'https://docs.spring.io/spring-boot/docs/3.0.0/api'
+'https://docs.spring.io/spring-boot/api/java'
 -link
-'https://docs.spring.io/spring-framework/docs/6.0.2/javadoc-api'
+'https://docs.spring.io/spring-framework/docs/7.0.1/javadoc-api'
 -link
 'https://java-native-access.github.io/jna/5.13.0/javadoc'
 -use
