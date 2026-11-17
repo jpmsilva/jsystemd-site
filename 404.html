@@ -1,0 +1,61 @@
+---
+layout: default
+permalink: /404.html
+---
+
+<!--
+Copyright 2026 Joao Silva
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+{% assign collection = site.collections | where:'label','versions' | first %}
+{% assign versions = "" | split:'' %}
+{% for file in collection.files %}
+{% assign pathElements = file.path | split:'/' %}
+{% assign count = pathElements | size %}
+{% if count == 3 and pathElements[2] == 'index.html' %}
+{% assign versions = versions | push: pathElements[1] %}
+{% endif %}
+{% endfor %}
+
+<script>
+  // versions/latest/... is not published; it is redirected here to the same page of the newest version
+  (function () {
+    var versions = {{ versions | jsonify }};
+    var latest = /\/versions\/latest(?=\/|$)/;
+    if (versions.length === 0 || !latest.test(window.location.pathname)) {
+      return;
+    }
+    // compares the versions number by number, as sorting them as text puts 10.0.0 before 5.0.0
+    var parts = function (version) {
+      return version.split('.').map(function (part) {
+        return parseInt(part, 10) || 0;
+      });
+    };
+    var newest = versions.reduce(function (newest, version) {
+      var a = parts(version), b = parts(newest);
+      for (var i = 0; i < Math.max(a.length, b.length); i++) {
+        if ((a[i] || 0) !== (b[i] || 0)) {
+          return (a[i] || 0) > (b[i] || 0) ? version : newest;
+        }
+      }
+      return newest;
+    });
+    window.location.replace(window.location.pathname.replace(latest, '/versions/' + newest)
+        + window.location.search + window.location.hash);
+  })();
+</script>
+
+<h1>Page not found</h1>
+<p>The page does not exist. Pick a version from the <a href="{{site.url}}/{{site.github.repository_name}}/">version list</a> to check the documentation.</p>
