@@ -1,0 +1,519 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>SystemdAutoConfiguration xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../../apidocs/com/github/jpmsilva/jsystemd/spring/autoconfigure/SystemdAutoConfiguration.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * Copyright 2018-2026 Joao Silva</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> * you may not use this file except in compliance with the License.</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> * You may obtain a copy of the License at</em>
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment"> *     <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_comment"> * Unless required by applicable law or agreed to in writing, software</em>
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment"> * distributed under the License is distributed on an "AS IS" BASIS,</em>
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_comment"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_comment"> * See the License for the specific language governing permissions and</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_comment"> * limitations under the License.</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_comment"> */</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">package</strong> com.github.jpmsilva.jsystemd.spring.autoconfigure;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> java.util.Objects.requireNonNull;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.BufferPoolStatusProvider;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.CgroupMemoryStatusProvider;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.ClassLoaderStatusProvider;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.CpuStatusProvider;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.FileDescriptorStatusProvider;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.GarbageCollectionStatusProvider;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.HealthProvider;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.HeapStatusProvider;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.NonHeapStatusProvider;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.OldGenerationStatusProvider;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.PhaseStatusProvider;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.StatusProvider;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.Systemd;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.ThreadStatusProvider;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.spring.ActuatorHealthStatusProvider;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.spring.AvailabilityStatusProvider;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.spring.ConditionalOnSystemd;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.spring.HikariStatusProvider;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.spring.JettyStatusProvider;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.spring.LiquibaseStatusProvider;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.spring.NettyStatusProvider;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.spring.ShutdownStatusProvider;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.spring.SystemdLifecycle;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.spring.TaskExecutorStatusProvider;
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> com.github.jpmsilva.jsystemd.spring.TomcatStatusProvider;
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> com.zaxxer.hikari.HikariDataSource;
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">import</strong> java.util.function.Predicate;
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Collectors;
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  <strong class="jxr_keyword">import</strong> liquibase.integration.spring.SpringLiquibase;
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">import</strong> org.apache.catalina.startup.Tomcat;
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <strong class="jxr_keyword">import</strong> org.eclipse.jetty.server.Server;
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <strong class="jxr_keyword">import</strong> org.jspecify.annotations.Nullable;
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.ObjectProvider;
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.SmartInitializingSingleton;
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.autoconfigure.AutoConfiguration;
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.availability.AvailabilityChangeEvent;
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.availability.ReadinessState;
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.context.properties.EnableConfigurationProperties;
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.health.actuate.endpoint.HealthEndpointGroup;
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.health.actuate.endpoint.HealthEndpointGroups;
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.health.contributor.HealthContributors;
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.health.contributor.HealthIndicator;
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.health.contributor.Status;
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.health.registry.HealthContributorRegistry;
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.health.registry.ReactiveHealthContributorRegistry;
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.jdbc.DataSourceUnwrapper;
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.jetty.JettyWebServer;
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.reactor.netty.NettyServerCustomizer;
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.tomcat.TomcatWebServer;
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.ApplicationContext;
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.SmartLifecycle;
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.annotation.Bean;
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.annotation.Configuration;
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.event.EventListener;
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  <strong class="jxr_keyword">import</strong> org.springframework.core.annotation.Order;
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>  <strong class="jxr_keyword">import</strong> reactor.netty.http.server.HttpServer;
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>  
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment"> * Autoconfiguration class for systemd integration.</em>
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;Sets up some basic {@link StatusProvider} as well.</em>
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment"> * @author Joao Silva</em>
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment"> * @author Christian Lorenz</em>
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  @AutoConfiguration
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>  @ConditionalOnSystemd
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  @EnableConfigurationProperties(SystemdProperties.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="SystemdAutoConfiguration" href="../../../../../../com/github/jpmsilva/jsystemd/spring/autoconfigure/SystemdAutoConfiguration.html#SystemdAutoConfiguration">SystemdAutoConfiguration</a> {
+<a class="jxr_linenumber" name="L100" href="#L100">100</a> 
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger = LoggerFactory.getLogger(SystemdAutoConfiguration.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L102" href="#L102">102</a> 
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="SystemdProperties" href="../../../../../../com/github/jpmsilva/jsystemd/spring/autoconfigure/SystemdProperties.html#SystemdProperties">SystemdProperties</a> properties;
+<a class="jxr_linenumber" name="L104" href="#L104">104</a> 
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>   <a name="SystemdAutoConfiguration" href="../../../../../../com/github/jpmsilva/jsystemd/spring/autoconfigure/SystemdAutoConfiguration.html#SystemdAutoConfiguration">SystemdAutoConfiguration</a>(<a name="SystemdProperties" href="../../../../../../com/github/jpmsilva/jsystemd/spring/autoconfigure/SystemdProperties.html#SystemdProperties">SystemdProperties</a> properties) {
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>     <strong class="jxr_keyword">this</strong>.properties = requireNonNull(properties, <span class="jxr_string">"Properties must not be null"</span>);
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>   }
+<a class="jxr_linenumber" name="L108" href="#L108">108</a> 
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L110" href="#L110">110</a> <em class="jxr_javadoccomment">   * Event listener for the {@link AvailabilityChangeEvent} event to report to systemd that the service is ready.</em>
+<a class="jxr_linenumber" name="L111" href="#L111">111</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L112" href="#L112">112</a> <em class="jxr_javadoccomment">   * &lt;p&gt;The application is considered ready when the event is a {@link ReadinessState} with the state {@link ReadinessState#ACCEPTING_TRAFFIC}, unless</em>
+<a class="jxr_linenumber" name="L113" href="#L113">113</a> <em class="jxr_javadoccomment">   * configured to be ready once it has started instead, with &lt;code&gt;systemd.ready-event=application-started&lt;/code&gt;, which</em>
+<a class="jxr_linenumber" name="L114" href="#L114">114</a> <em class="jxr_javadoccomment">   * {@link SystemdSpringApplicationRunListener} reports.</em>
+<a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L116" href="#L116">116</a> <em class="jxr_javadoccomment">   * @param event the {@link AvailabilityChangeEvent} received</em>
+<a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>   @EventListener
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> started(@SuppressWarnings(<span class="jxr_string">"unused"</span>) AvailabilityChangeEvent&lt;ReadinessState&gt; event) {
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">if</strong> (properties.getReadyEvent() == SystemdProperties.ReadyEvent.ACCEPTING_TRAFFIC &amp;&amp; event.getState() == ReadinessState.ACCEPTING_TRAFFIC) {
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>       Systemd.instance().ready();
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>     }
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>   }
+<a class="jxr_linenumber" name="L124" href="#L124">124</a> 
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>   @Bean
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>   <a name="SystemdLifecycle" href="../../../../../../com/github/jpmsilva/jsystemd/spring/SystemdLifecycle.html#SystemdLifecycle">SystemdLifecycle</a> systemdLifecycle(ApplicationContext context) {
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="SystemdLifecycle" href="../../../../../../com/github/jpmsilva/jsystemd/spring/SystemdLifecycle.html#SystemdLifecycle">SystemdLifecycle</a>(context);
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>   }
+<a class="jxr_linenumber" name="L129" href="#L129">129</a> 
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>   @Bean
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>   @Order(-10000)
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"shutdown.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>   @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>   <a name="ShutdownStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/ShutdownStatusProvider.html#ShutdownStatusProvider">ShutdownStatusProvider</a> systemdShutdownStatusProvider(ApplicationContext context) {
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="ShutdownStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/ShutdownStatusProvider.html#ShutdownStatusProvider">ShutdownStatusProvider</a>(context);
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>   }
+<a class="jxr_linenumber" name="L137" href="#L137">137</a> 
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>   @Bean
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"shutdown.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>   SmartLifecycle systemdShutdownRequestsStage(<a name="ShutdownStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/ShutdownStatusProvider.html#ShutdownStatusProvider">ShutdownStatusProvider</a> systemdShutdownStatusProvider) {
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>     <strong class="jxr_keyword">return</strong> systemdShutdownStatusProvider.requestsStage();
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>   }
+<a class="jxr_linenumber" name="L143" href="#L143">143</a> 
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>   @Bean
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"shutdown.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>   SmartLifecycle systemdShutdownBeansStage(<a name="ShutdownStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/ShutdownStatusProvider.html#ShutdownStatusProvider">ShutdownStatusProvider</a> systemdShutdownStatusProvider) {
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>     <strong class="jxr_keyword">return</strong> systemdShutdownStatusProvider.beansStage();
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>   }
+<a class="jxr_linenumber" name="L149" href="#L149">149</a> 
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L151" href="#L151">151</a> <em class="jxr_javadoccomment">   * A {@link PhaseStatusProvider} for the application to report what it is doing, sent to systemd right away on every change of phase.</em>
+<a class="jxr_linenumber" name="L152" href="#L152">152</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L153" href="#L153">153</a> <em class="jxr_javadoccomment">   * @return the phase status provider of the application</em>
+<a class="jxr_linenumber" name="L154" href="#L154">154</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>   @Bean
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>   @Order(-9000)
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>   @ConditionalOnMissingBean(PhaseStatusProvider.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>   <a name="PhaseStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/PhaseStatusProvider.html#PhaseStatusProvider">PhaseStatusProvider</a> systemdPhaseStatusProvider() {
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="PhaseStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/PhaseStatusProvider.html#PhaseStatusProvider">PhaseStatusProvider</a>(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>   }
+<a class="jxr_linenumber" name="L161" href="#L161">161</a> 
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>   @Bean
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>   @Order(-6000)
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"heap.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>   @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>   <a name="HeapStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/HeapStatusProvider.html#HeapStatusProvider">HeapStatusProvider</a> systemdHeapStatusProvider() {
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="HeapStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/HeapStatusProvider.html#HeapStatusProvider">HeapStatusProvider</a>();
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>   }
+<a class="jxr_linenumber" name="L169" href="#L169">169</a> 
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>   @Bean
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>   @Order(-5000)
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"old-generation.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>   @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>   <a name="OldGenerationStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/OldGenerationStatusProvider.html#OldGenerationStatusProvider">OldGenerationStatusProvider</a> systemdOldGenerationStatusProvider() {
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="OldGenerationStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/OldGenerationStatusProvider.html#OldGenerationStatusProvider">OldGenerationStatusProvider</a>();
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>   }
+<a class="jxr_linenumber" name="L177" href="#L177">177</a> 
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>   @Bean
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>   @Order(7000)
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"non-heap.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>   @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>   <a name="NonHeapStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/NonHeapStatusProvider.html#NonHeapStatusProvider">NonHeapStatusProvider</a> systemdNonHeapStatusProvider() {
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="NonHeapStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/NonHeapStatusProvider.html#NonHeapStatusProvider">NonHeapStatusProvider</a>();
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>   }
+<a class="jxr_linenumber" name="L185" href="#L185">185</a> 
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>   @Bean
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>   @Order(8000)
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"buffer-pools.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>   @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>   <a name="BufferPoolStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/BufferPoolStatusProvider.html#BufferPoolStatusProvider">BufferPoolStatusProvider</a> systemdBufferPoolStatusProvider() {
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="BufferPoolStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/BufferPoolStatusProvider.html#BufferPoolStatusProvider">BufferPoolStatusProvider</a>();
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>   }
+<a class="jxr_linenumber" name="L193" href="#L193">193</a> 
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>   @Bean
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>   @Order(6000)
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"garbage-collection.enabled"</span>)
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>   @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>   <a name="GarbageCollectionStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/GarbageCollectionStatusProvider.html#GarbageCollectionStatusProvider">GarbageCollectionStatusProvider</a> systemdGarbageCollectionStatusProvider() {
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="GarbageCollectionStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/GarbageCollectionStatusProvider.html#GarbageCollectionStatusProvider">GarbageCollectionStatusProvider</a>();
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>   }
+<a class="jxr_linenumber" name="L201" href="#L201">201</a> 
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>   @Bean
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>   @Order(9000)
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"class-loader.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>   @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>   <a name="ClassLoaderStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/ClassLoaderStatusProvider.html#ClassLoaderStatusProvider">ClassLoaderStatusProvider</a> systemdClassLoaderStatusProvider() {
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="ClassLoaderStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/ClassLoaderStatusProvider.html#ClassLoaderStatusProvider">ClassLoaderStatusProvider</a>();
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>   }
+<a class="jxr_linenumber" name="L209" href="#L209">209</a> 
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>   @Bean
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>   @Order(-2000)
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"threads.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>   @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>   <a name="ThreadStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/ThreadStatusProvider.html#ThreadStatusProvider">ThreadStatusProvider</a> systemdThreadStatusProvider(<a name="SystemdProperties" href="../../../../../../com/github/jpmsilva/jsystemd/spring/autoconfigure/SystemdProperties.html#SystemdProperties">SystemdProperties</a> properties) {
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>     SystemdProperties.Threads threads = properties.getStatusProviders().getThreads();
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="ThreadStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/ThreadStatusProvider.html#ThreadStatusProvider">ThreadStatusProvider</a>(threads.isDeadlockDetection(), threads.isDeadlockHealth());
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>   }
+<a class="jxr_linenumber" name="L218" href="#L218">218</a> 
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>   @Bean
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>   @Order(-4000)
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"cgroup-memory.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>   @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>   <a name="CgroupMemoryStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/CgroupMemoryStatusProvider.html#CgroupMemoryStatusProvider">CgroupMemoryStatusProvider</a> systemdCgroupMemoryStatusProvider() {
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="CgroupMemoryStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/CgroupMemoryStatusProvider.html#CgroupMemoryStatusProvider">CgroupMemoryStatusProvider</a>();
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>   }
+<a class="jxr_linenumber" name="L226" href="#L226">226</a> 
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>   @Bean
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>   @Order(-7000)
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"availability.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>   @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>   <a name="AvailabilityStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/AvailabilityStatusProvider.html#AvailabilityStatusProvider">AvailabilityStatusProvider</a> systemdAvailabilityStatusProvider(<a name="SystemdProperties" href="../../../../../../com/github/jpmsilva/jsystemd/spring/autoconfigure/SystemdProperties.html#SystemdProperties">SystemdProperties</a> properties) {
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>     SystemdProperties.Availability availability = properties.getStatusProviders().getAvailability();
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>     <a name="AvailabilityStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/AvailabilityStatusProvider.html#AvailabilityStatusProvider">AvailabilityStatusProvider</a> provider = <strong class="jxr_keyword">new</strong> <a name="AvailabilityStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/AvailabilityStatusProvider.html#AvailabilityStatusProvider">AvailabilityStatusProvider</a>(availability.isHealth());
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>     provider.setUnhealthyDelay(availability.getUnhealthyDelay());
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>     <strong class="jxr_keyword">return</strong> provider;
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>   }
+<a class="jxr_linenumber" name="L237" href="#L237">237</a> 
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>   @Bean
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>   @Order(4000)
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"task-executors.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>   @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>   <a name="TaskExecutorStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/TaskExecutorStatusProvider.html#TaskExecutorStatusProvider">TaskExecutorStatusProvider</a> systemdTaskExecutorStatusProvider(ConfigurableListableBeanFactory beanFactory) {
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="TaskExecutorStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/TaskExecutorStatusProvider.html#TaskExecutorStatusProvider">TaskExecutorStatusProvider</a>(beanFactory);
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>   }
+<a class="jxr_linenumber" name="L245" href="#L245">245</a> 
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L247" href="#L247">247</a> <em class="jxr_javadoccomment">   * Configuration class for the status providers that read the operating system beans specific to the JVMs based on OpenJDK, which are left out on</em>
+<a class="jxr_linenumber" name="L248" href="#L248">248</a> <em class="jxr_javadoccomment">   * other JVMs.</em>
+<a class="jxr_linenumber" name="L249" href="#L249">249</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>   @Configuration(proxyBeanMethods = false)
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>   @ConditionalOnSystemd
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> SystemdOperatingSystemConfiguration {
+<a class="jxr_linenumber" name="L253" href="#L253">253</a> 
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>     SystemdOperatingSystemConfiguration() {
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>     }
+<a class="jxr_linenumber" name="L256" href="#L256">256</a> 
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>     @Bean
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>     @Order(5000)
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>     @ConditionalOnClass(name = <span class="jxr_string">"com.sun.management.OperatingSystemMXBean"</span>)
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>     @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"cpu.enabled"</span>)
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>     @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>     <a name="CpuStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/CpuStatusProvider.html#CpuStatusProvider">CpuStatusProvider</a> systemdCpuStatusProvider() {
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="CpuStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/CpuStatusProvider.html#CpuStatusProvider">CpuStatusProvider</a>();
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>     }
+<a class="jxr_linenumber" name="L265" href="#L265">265</a> 
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>     @Bean
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>     @Order(-1000)
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>     @ConditionalOnClass(name = <span class="jxr_string">"com.sun.management.UnixOperatingSystemMXBean"</span>)
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>     @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"file-descriptors.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>     @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>     <a name="FileDescriptorStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/FileDescriptorStatusProvider.html#FileDescriptorStatusProvider">FileDescriptorStatusProvider</a> systemdFileDescriptorStatusProvider(<a name="SystemdProperties" href="../../../../../../com/github/jpmsilva/jsystemd/spring/autoconfigure/SystemdProperties.html#SystemdProperties">SystemdProperties</a> properties) {
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>       SystemdProperties.FileDescriptors fileDescriptors = properties.getStatusProviders().getFileDescriptors();
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>       <a name="FileDescriptorStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/FileDescriptorStatusProvider.html#FileDescriptorStatusProvider">FileDescriptorStatusProvider</a> provider = <strong class="jxr_keyword">new</strong> <a name="FileDescriptorStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/FileDescriptorStatusProvider.html#FileDescriptorStatusProvider">FileDescriptorStatusProvider</a>(fileDescriptors.isHealth(), fileDescriptors.getThreshold());
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>       provider.setUnhealthyDelay(fileDescriptors.getUnhealthyDelay());
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>       <strong class="jxr_keyword">return</strong> provider;
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>     }
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>   }
+<a class="jxr_linenumber" name="L278" href="#L278">278</a> 
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L280" href="#L280">280</a> <em class="jxr_javadoccomment">   * Configuration class for systemd integration when running under the embedded Tomcat of Spring Boot.</em>
+<a class="jxr_linenumber" name="L281" href="#L281">281</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>   @Configuration(proxyBeanMethods = false)
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>   @ConditionalOnSystemd
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>   @ConditionalOnClass({Tomcat.<strong class="jxr_keyword">class</strong>, TomcatWebServer.<strong class="jxr_keyword">class</strong>})
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> SystemdTomcatConfiguration {
+<a class="jxr_linenumber" name="L286" href="#L286">286</a> 
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>     SystemdTomcatConfiguration() {
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>     }
+<a class="jxr_linenumber" name="L289" href="#L289">289</a> 
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>     @Bean
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>     @Order(1000)
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>     @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"tomcat.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>     @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>     <a name="TomcatStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/TomcatStatusProvider.html#TomcatStatusProvider">TomcatStatusProvider</a> systemdTomcatStatusProvider() {
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="TomcatStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/TomcatStatusProvider.html#TomcatStatusProvider">TomcatStatusProvider</a>();
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>     }
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>   }
+<a class="jxr_linenumber" name="L298" href="#L298">298</a> 
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L300" href="#L300">300</a> <em class="jxr_javadoccomment">   * Configuration class for systemd integration when running under the embedded Jetty of Spring Boot.</em>
+<a class="jxr_linenumber" name="L301" href="#L301">301</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>   @Configuration(proxyBeanMethods = false)
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>   @ConditionalOnSystemd
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>   @ConditionalOnClass({Server.<strong class="jxr_keyword">class</strong>, JettyWebServer.<strong class="jxr_keyword">class</strong>})
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> SystemdJettyConfiguration {
+<a class="jxr_linenumber" name="L306" href="#L306">306</a> 
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>     SystemdJettyConfiguration() {
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>     }
+<a class="jxr_linenumber" name="L309" href="#L309">309</a> 
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>     @Bean
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>     @Order(2000)
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>     @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"jetty.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>     @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>     <a name="JettyStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/JettyStatusProvider.html#JettyStatusProvider">JettyStatusProvider</a> systemdJettyStatusProvider() {
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="JettyStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/JettyStatusProvider.html#JettyStatusProvider">JettyStatusProvider</a>();
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>     }
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>   }
+<a class="jxr_linenumber" name="L318" href="#L318">318</a> 
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L320" href="#L320">320</a> <em class="jxr_javadoccomment">   * Configuration class for systemd integration when running under the embedded Reactor Netty of Spring Boot.</em>
+<a class="jxr_linenumber" name="L321" href="#L321">321</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>   @Configuration(proxyBeanMethods = false)
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>   @ConditionalOnSystemd
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>   @ConditionalOnClass({HttpServer.<strong class="jxr_keyword">class</strong>, NettyServerCustomizer.<strong class="jxr_keyword">class</strong>})
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> SystemdNettyConfiguration {
+<a class="jxr_linenumber" name="L326" href="#L326">326</a> 
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>     SystemdNettyConfiguration() {
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>     }
+<a class="jxr_linenumber" name="L329" href="#L329">329</a> 
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>     @Bean
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>     @Order(3000)
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>     @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"netty.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>     @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>     <a name="NettyStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/NettyStatusProvider.html#NettyStatusProvider">NettyStatusProvider</a> systemdNettyStatusProvider() {
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="NettyStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/NettyStatusProvider.html#NettyStatusProvider">NettyStatusProvider</a>();
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>     }
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>   }
+<a class="jxr_linenumber" name="L338" href="#L338">338</a> 
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L340" href="#L340">340</a> <em class="jxr_javadoccomment">   * Configuration class for systemd integration when using HikariCP connection pools.</em>
+<a class="jxr_linenumber" name="L341" href="#L341">341</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>   @Configuration(proxyBeanMethods = false)
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>   @ConditionalOnSystemd
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>   @ConditionalOnClass({HikariDataSource.<strong class="jxr_keyword">class</strong>, DataSourceUnwrapper.<strong class="jxr_keyword">class</strong>})
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"hikari.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> SystemdHikariConfiguration {
+<a class="jxr_linenumber" name="L347" href="#L347">347</a> 
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>     SystemdHikariConfiguration() {
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>     }
+<a class="jxr_linenumber" name="L350" href="#L350">350</a> 
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>     @Bean
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>     @Order(-3000)
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>     @ConditionalOnMissingBean
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>     <a name="HikariStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/HikariStatusProvider.html#HikariStatusProvider">HikariStatusProvider</a> systemdHikariStatusProvider(ConfigurableListableBeanFactory beanFactory,
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>         <a name="SystemdProperties" href="../../../../../../com/github/jpmsilva/jsystemd/spring/autoconfigure/SystemdProperties.html#SystemdProperties">SystemdProperties</a> properties) {
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>       SystemdProperties.Hikari hikari = properties.getStatusProviders().getHikari();
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>       <a name="HikariStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/HikariStatusProvider.html#HikariStatusProvider">HikariStatusProvider</a> provider = <strong class="jxr_keyword">new</strong> <a name="HikariStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/HikariStatusProvider.html#HikariStatusProvider">HikariStatusProvider</a>(beanFactory, hikari.isHealth());
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>       provider.setUnhealthyDelay(hikari.getUnhealthyDelay());
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>       <strong class="jxr_keyword">return</strong> provider;
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>     }
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>   }
+<a class="jxr_linenumber" name="L362" href="#L362">362</a> 
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L364" href="#L364">364</a> <em class="jxr_javadoccomment">   * Configuration class for systemd integration when using Liquibase, reporting the progress of the database migrations run on startup.</em>
+<a class="jxr_linenumber" name="L365" href="#L365">365</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>   @Configuration(proxyBeanMethods = false)
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>   @ConditionalOnSystemd
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>   @ConditionalOnClass(SpringLiquibase.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"liquibase.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> SystemdLiquibaseConfiguration {
+<a class="jxr_linenumber" name="L371" href="#L371">371</a> 
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>     SystemdLiquibaseConfiguration() {
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>     }
+<a class="jxr_linenumber" name="L374" href="#L374">374</a> 
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L376" href="#L376">376</a> <em class="jxr_javadoccomment">     * The status provider of the Liquibase migrations, which is also a bean post processor, so it is created before the other beans: it is added to the</em>
+<a class="jxr_linenumber" name="L377" href="#L377">377</a> <em class="jxr_javadoccomment">     * status providers of systemd right away, rather than once all beans are created, so that the migrations are reported while they run on startup.</em>
+<a class="jxr_linenumber" name="L378" href="#L378">378</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L379" href="#L379">379</a> <em class="jxr_javadoccomment">     * @return the status provider of the Liquibase migrations</em>
+<a class="jxr_linenumber" name="L380" href="#L380">380</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>     @Bean
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>     <strong class="jxr_keyword">static</strong> <a name="LiquibaseStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/LiquibaseStatusProvider.html#LiquibaseStatusProvider">LiquibaseStatusProvider</a> systemdLiquibaseStatusProvider() {
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>       <a name="LiquibaseStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/LiquibaseStatusProvider.html#LiquibaseStatusProvider">LiquibaseStatusProvider</a> provider = <strong class="jxr_keyword">new</strong> <a name="LiquibaseStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/LiquibaseStatusProvider.html#LiquibaseStatusProvider">LiquibaseStatusProvider</a>();
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>       Systemd.instance().addStatusProviders(provider);
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>       <strong class="jxr_keyword">return</strong> provider;
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>     }
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>   }
+<a class="jxr_linenumber" name="L388" href="#L388">388</a> 
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L390" href="#L390">390</a> <em class="jxr_javadoccomment">   * Configuration class for systemd integration when using Spring Boot Actuator, providing a {@link HealthProvider} based on its health contributors.</em>
+<a class="jxr_linenumber" name="L391" href="#L391">391</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>   @Configuration(proxyBeanMethods = false)
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>   @ConditionalOnSystemd
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>   @ConditionalOnClass(HealthIndicator.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>   @ConditionalOnProperty(prefix = SystemdProperties.STATUS_PROVIDERS_PREFIX, name = <span class="jxr_string">"actuator-health.enabled"</span>, matchIfMissing = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> SystemdActuatorHealthConfiguration {
+<a class="jxr_linenumber" name="L397" href="#L397">397</a> 
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>     SystemdActuatorHealthConfiguration() {
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>     }
+<a class="jxr_linenumber" name="L400" href="#L400">400</a> 
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>     @Bean
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>     @Order(-8000)
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>     @ConditionalOnMissingBean(ActuatorHealthStatusProvider.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>     <a name="ActuatorHealthStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/ActuatorHealthStatusProvider.html#ActuatorHealthStatusProvider">ActuatorHealthStatusProvider</a> systemdActuatorHealthStatusProvider(ObjectProvider&lt;HealthContributorRegistry&gt; registryProvider,
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>         ObjectProvider&lt;ReactiveHealthContributorRegistry&gt; reactiveRegistryProvider, ObjectProvider&lt;HealthEndpointGroups&gt; groupsProvider,
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>         <a name="SystemdProperties" href="../../../../../../com/github/jpmsilva/jsystemd/spring/autoconfigure/SystemdProperties.html#SystemdProperties">SystemdProperties</a> systemdProperties) {
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>       requireNonNull(registryProvider, <span class="jxr_string">"Registry provider must not be null"</span>);
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>       requireNonNull(reactiveRegistryProvider, <span class="jxr_string">"Reactive registry provider must not be null"</span>);
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>       requireNonNull(systemdProperties, <span class="jxr_string">"Properties must not be null"</span>);
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>       SystemdProperties.ActuatorHealth properties = systemdProperties.getStatusProviders().getActuatorHealth();
+<a class="jxr_linenumber" name="L411" href="#L411">411</a> 
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>       <em class="jxr_comment">// the same contributors, with the same names, as the health endpoint, which also adapts the reactive ones</em>
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>       List&lt;HealthContributors&gt; contributors = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>       HealthContributorRegistry registry = registryProvider.getIfAvailable();
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>       <strong class="jxr_keyword">if</strong> (registry == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>         logger.warn(<span class="jxr_string">"There is no health contributor registry, so the Spring Boot Actuator health is always reported as healthy; check that the health "</span>
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>             + <span class="jxr_string">"contributor registry autoconfiguration of Spring Boot is not excluded"</span>);
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>       } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>         contributors.add(registry);
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>       }
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>       reactiveRegistryProvider.ifAvailable(reactiveRegistry -&gt; contributors.add(reactiveRegistry.asHealthContributors()));
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>       Set&lt;Status&gt; unhealthyStatusCodes = properties.getUnhealthyStatusCodes().stream().map(Status::<strong class="jxr_keyword">new</strong>).collect(Collectors.toSet());
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>       <strong class="jxr_keyword">if</strong> (properties.isHealth() &amp;&amp; unhealthyStatusCodes.isEmpty() &amp;&amp; Systemd.watchdogTimeout().isPresent() &amp;&amp; !systemdProperties.isWatchdogSuppressWarning()) {
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>         logger.warn(<span class="jxr_string">"The systemd watchdog is enabled but no health status codes are considered as unhealthy, so the watchdog heartbeat will never be "</span>
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>             + <span class="jxr_string">"suppressed; set '{}.unhealthy-status-codes' with the status codes to consider as unhealthy, or suppress this warning with "</span>
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>             + <span class="jxr_string">"'{}.watchdog-suppress-warning=true'"</span>, SystemdProperties.ActuatorHealth.PREFIX, SystemdProperties.PREFIX);
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>       }
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>       <a name="ActuatorHealthStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/ActuatorHealthStatusProvider.html#ActuatorHealthStatusProvider">ActuatorHealthStatusProvider</a> provider = <strong class="jxr_keyword">new</strong> <a name="ActuatorHealthStatusProvider" href="../../../../../../com/github/jpmsilva/jsystemd/spring/ActuatorHealthStatusProvider.html#ActuatorHealthStatusProvider">ActuatorHealthStatusProvider</a>(HealthContributors.of(contributors.toArray(HealthContributors[]::<strong class="jxr_keyword">new</strong>)),
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>           unhealthyStatusCodes, member(properties.getGroup(), groupsProvider), properties.isHealth());
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>       provider.setUnhealthyDelay(properties.getUnhealthyDelay());
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>       <strong class="jxr_keyword">return</strong> provider;
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>     }
+<a class="jxr_linenumber" name="L433" href="#L433">433</a> 
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L435" href="#L435">435</a> <em class="jxr_javadoccomment">     * Returns the membership test of the health group with the given name, the one of the health endpoint, or one that takes all the health indicators into</em>
+<a class="jxr_linenumber" name="L436" href="#L436">436</a> <em class="jxr_javadoccomment">     * account without a group.</em>
+<a class="jxr_linenumber" name="L437" href="#L437">437</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L438" href="#L438">438</a> <em class="jxr_javadoccomment">     * @throws InvalidConfigurationPropertyValueException if there is no health group with the given name</em>
+<a class="jxr_linenumber" name="L439" href="#L439">439</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Predicate&lt;String&gt; member(@Nullable String group, ObjectProvider&lt;HealthEndpointGroups&gt; groupsProvider) {
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>       <strong class="jxr_keyword">if</strong> (group == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>         <strong class="jxr_keyword">return</strong> name -&gt; <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>       }
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>       String property = SystemdProperties.ActuatorHealth.PREFIX + <span class="jxr_string">".group"</span>;
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>       HealthEndpointGroups groups = groupsProvider.getIfAvailable();
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>       <strong class="jxr_keyword">if</strong> (groups == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> InvalidConfigurationPropertyValueException(property, group, <span class="jxr_string">"There are no health groups, as the health endpoint of Spring Boot "</span>
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>             + <span class="jxr_string">"Actuator is not available: check that it is not disabled, nor its autoconfiguration excluded"</span>);
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>       }
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>       HealthEndpointGroup healthGroup = groups.get(group);
+<a class="jxr_linenumber" name="L451" href="#L451">451</a>       <strong class="jxr_keyword">if</strong> (healthGroup == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> InvalidConfigurationPropertyValueException(property, group, <span class="jxr_string">"There is no such health group; the health groups are "</span> + groups.getNames()
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>             + <span class="jxr_string">" (the liveness and readiness groups are not set up with management.endpoint.health.probes.enabled=false)"</span>);
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>       }
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>       <strong class="jxr_keyword">return</strong> healthGroup::isMember;
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>     }
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>   }
+<a class="jxr_linenumber" name="L458" href="#L458">458</a> 
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L460" href="#L460">460</a> <em class="jxr_javadoccomment">   * Makes the systemd status include the status of the application, once all beans are created, so that the {@link StatusProvider} beans defined by</em>
+<a class="jxr_linenumber" name="L461" href="#L461">461</a> <em class="jxr_javadoccomment">   * the application are also found. The beans are added to the status providers of systemd, after the ones already registered (such as the startup status</em>
+<a class="jxr_linenumber" name="L462" href="#L462">462</a> <em class="jxr_javadoccomment">   * providers), in the order given by the &lt;code&gt;@Order&lt;/code&gt; of their bean methods or classes. Beans already registered are not added again. While there</em>
+<a class="jxr_linenumber" name="L463" href="#L463">463</a> <em class="jxr_javadoccomment">   * is no status provider, no status is sent.</em>
+<a class="jxr_linenumber" name="L464" href="#L464">464</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L465" href="#L465">465</a> <em class="jxr_javadoccomment">   * &lt;p&gt;The built-in status providers, such as the {@link HeapStatusProvider}, are added while enabled, with the</em>
+<a class="jxr_linenumber" name="L466" href="#L466">466</a> <em class="jxr_javadoccomment">   * &lt;code&gt;systemd.status-providers.&amp;lt;key&amp;gt;.enabled&lt;/code&gt; properties, all enabled by default except for the {@link GarbageCollectionStatusProvider}</em>
+<a class="jxr_linenumber" name="L467" href="#L467">467</a> <em class="jxr_javadoccomment">   * and the {@link CpuStatusProvider}, which are opted into.</em>
+<a class="jxr_linenumber" name="L468" href="#L468">468</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L469" href="#L469">469</a> <em class="jxr_javadoccomment">   * @param statuses the status providers of the application</em>
+<a class="jxr_linenumber" name="L470" href="#L470">470</a> <em class="jxr_javadoccomment">   * @return the callback that adds the status providers to the systemd status</em>
+<a class="jxr_linenumber" name="L471" href="#L471">471</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>   @Bean
+<a class="jxr_linenumber" name="L473" href="#L473">473</a>   SmartInitializingSingleton systemdStatusProviders(ObjectProvider&lt;StatusProvider&gt; statuses) {
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>     <strong class="jxr_keyword">return</strong> () -&gt; {
+<a class="jxr_linenumber" name="L475" href="#L475">475</a>       <a name="Systemd" href="../../../../../../com/github/jpmsilva/jsystemd/Systemd.html#Systemd">Systemd</a> systemd = Systemd.instance();
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>       List&lt;StatusProvider&gt; registered = systemd.getStatusProviders();
+<a class="jxr_linenumber" name="L477" href="#L477">477</a>       systemd.addStatusProviders(statuses.orderedStream()
+<a class="jxr_linenumber" name="L478" href="#L478">478</a>           .filter(provider -&gt; !registered.contains(provider))
+<a class="jxr_linenumber" name="L479" href="#L479">479</a>           .toList());
+<a class="jxr_linenumber" name="L480" href="#L480">480</a>     };
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>   }
+<a class="jxr_linenumber" name="L482" href="#L482">482</a> 
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L484" href="#L484">484</a> <em class="jxr_javadoccomment">   * Makes the systemd watchdog take the application health into account, once all beans are created, so that the {@link HealthProvider} beans defined by</em>
+<a class="jxr_linenumber" name="L485" href="#L485">485</a> <em class="jxr_javadoccomment">   * the application are also found. The beans are added to the health providers of systemd, after the ones already registered, in the order given by the</em>
+<a class="jxr_linenumber" name="L486" href="#L486">486</a> <em class="jxr_javadoccomment">   * &lt;code&gt;@Order&lt;/code&gt; of their bean methods or classes. Beans already registered are not added again. While there is no health provider, the watchdog</em>
+<a class="jxr_linenumber" name="L487" href="#L487">487</a> <em class="jxr_javadoccomment">   * heartbeat is always sent.</em>
+<a class="jxr_linenumber" name="L488" href="#L488">488</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L489" href="#L489">489</a> <em class="jxr_javadoccomment">   * &lt;p&gt;The built-in status providers that are also health providers, such as the {@link ThreadStatusProvider}, the {@link FileDescriptorStatusProvider},</em>
+<a class="jxr_linenumber" name="L490" href="#L490">490</a> <em class="jxr_javadoccomment">   * the {@link HikariStatusProvider}, the {@link AvailabilityStatusProvider} and the {@link ActuatorHealthStatusProvider}, are added while enabled. Their</em>
+<a class="jxr_linenumber" name="L491" href="#L491">491</a> <em class="jxr_javadoccomment">   * health conditions are controlled by their own properties, all disabled by default, so that they are always healthy unless opted into.</em>
+<a class="jxr_linenumber" name="L492" href="#L492">492</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L493" href="#L493">493</a> <em class="jxr_javadoccomment">   * @param healthProviders the health providers of the application</em>
+<a class="jxr_linenumber" name="L494" href="#L494">494</a> <em class="jxr_javadoccomment">   * @return the callback that adds the health providers to the watchdog</em>
+<a class="jxr_linenumber" name="L495" href="#L495">495</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L496" href="#L496">496</a>   @Bean
+<a class="jxr_linenumber" name="L497" href="#L497">497</a>   SmartInitializingSingleton systemdHealthProviders(ObjectProvider&lt;HealthProvider&gt; healthProviders) {
+<a class="jxr_linenumber" name="L498" href="#L498">498</a>     <strong class="jxr_keyword">return</strong> () -&gt; {
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>       <a name="Systemd" href="../../../../../../com/github/jpmsilva/jsystemd/Systemd.html#Systemd">Systemd</a> systemd = Systemd.instance();
+<a class="jxr_linenumber" name="L500" href="#L500">500</a>       List&lt;HealthProvider&gt; registered = systemd.getHealthProviders();
+<a class="jxr_linenumber" name="L501" href="#L501">501</a>       systemd.addHealthProviders(healthProviders.orderedStream()
+<a class="jxr_linenumber" name="L502" href="#L502">502</a>           .filter(provider -&gt; !registered.contains(provider))
+<a class="jxr_linenumber" name="L503" href="#L503">503</a>           .toList());
+<a class="jxr_linenumber" name="L504" href="#L504">504</a>     };
+<a class="jxr_linenumber" name="L505" href="#L505">505</a>   }
+<a class="jxr_linenumber" name="L506" href="#L506">506</a> }
+</pre>
+<hr/>
+<div id="footer">© 2017–2026</div>
+</body>
+</html>
