@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.github.jpmsilva.jsystemd"},{"l":"com.github.jpmsilva.jsystemd.keycloak"},{"l":"com.github.jpmsilva.jsystemd.spring"},{"l":"com.github.jpmsilva.jsystemd.spring.autoconfigure"}];updateSearchResults();
