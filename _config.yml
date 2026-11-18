@@ -1,10 +1,24 @@
 collections:
-  - versions
-theme: jekyll-theme-minimal
+  versions:
+    output: true
+baseurl: /jsystemd-site
+# Never publish SNAPSHOT documentation, even if it gets committed.
+# Setting exclude replaces the defaults on GitHub Pages, so they are repeated here.
+exclude:
+  - _versions/*-SNAPSHOT/*
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+# The site has its own layout; without this GitHub Pages falls back to the Primer theme
+theme: null
 title: jsystemd
 description: >
   jsystemd aims to provide a better platform to integrate Java applications with systemd, and run
   them as proper operating system services.<br>Pick a version from the list to check the
   documentation.
+# Values used by the layout; GitHub Pages fetches these too, but local builds have no API access
 github:
+  owner_name: jpmsilva
+  owner_url: https://github.com/jpmsilva
   repository_url: https://github.com/jpmsilva/jsystemd

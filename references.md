@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 https://flinhong.com/2016/08/20/using-liquid-in-jekyll/#array
 https://jekyllrb.com/docs/templates/#filters
 https://github.com/Shopify/liquid/wiki/Liquid-for-Designers
