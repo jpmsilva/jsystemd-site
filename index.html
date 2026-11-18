@@ -27,7 +27,7 @@ limitations under the License.
   {% assign count = pathElements | size %}
   {% if count == 3 and pathElements[2] == 'index.html' %}
   {% assign version = pathElements[1] %}
-  <li><a href="{{site.url}}/{{site.github.repository_name}}/versions/{{version}}">{{version}}</a>
+  <li><a href="{{ "/versions/" | append: version | relative_url }}">{{version}}</a>
   </li>
   {% endif %}
   {% endfor %}
